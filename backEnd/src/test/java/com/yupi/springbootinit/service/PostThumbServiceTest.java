@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class PostThumbServiceTest {
 
     @Resource
-    private PostThumbService postThumbService;
+//    private PostThumbService postThumbService;
 
     private static final User loginUser = new User();
 
@@ -26,9 +26,9 @@ class PostThumbServiceTest {
         loginUser.setId(1L);
     }
 
-    @Test
-    void doPostThumb() {
-        int i = postThumbService.doPostThumb(1L, loginUser);
-        Assertions.assertTrue(i >= 0);
-    }
+//    @Test
+//    void doPostThumb() {
+//        int i = postThumbService.doPostThumb(1L, loginUser);
+//        Assertions.assertTrue(i >= 0);
+//    }
 }

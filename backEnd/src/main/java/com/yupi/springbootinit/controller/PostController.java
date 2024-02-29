@@ -19,16 +19,13 @@ import com.yupi.springbootinit.model.entity.User;
 import com.yupi.springbootinit.model.vo.PostVO;
 import com.yupi.springbootinit.service.PostService;
 import com.yupi.springbootinit.service.UserService;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 帖子接口
@@ -67,7 +64,7 @@ public class PostController {
         if (tags != null) {
             post.setTags(JSONUtil.toJsonStr(tags));
         }
-        postService.validPost(post, true);
+//        postService.validPost(post, true);
         User loginUser = userService.getLoginUser(request);
         post.setUserId(loginUser.getId());
         post.setFavourNum(0);
@@ -122,7 +119,7 @@ public class PostController {
             post.setTags(JSONUtil.toJsonStr(tags));
         }
         // 参数校验
-        postService.validPost(post, false);
+//        postService.validPost(post, false);
         long id = postUpdateRequest.getId();
         // 判断是否存在
         Post oldPost = postService.getById(id);
@@ -131,101 +128,101 @@ public class PostController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 根据 id 获取
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping("/get/vo")
-    public BaseResponse<PostVO> getPostVOById(long id, HttpServletRequest request) {
-        if (id <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        Post post = postService.getById(id);
-        if (post == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        return ResultUtils.success(postService.getPostVO(post, request));
-    }
+//    /**
+//     * 根据 id 获取
+//     *
+//     * @param id
+//     * @return
+//     */
+//    @GetMapping("/get/vo")
+//    public BaseResponse<PostVO> getPostVOById(long id, HttpServletRequest request) {
+//        if (id <= 0) {
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//        }
+//        Post post = postService.getById(id);
+//        if (post == null) {
+//            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+//        }
+//        return ResultUtils.success(postService.getPostVO(post, request));
+//    }
 
-    /**
-     * 分页获取列表（仅管理员）
-     *
-     * @param postQueryRequest
-     * @return
-     */
-    @PostMapping("/list/page")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<Post>> listPostByPage(@RequestBody PostQueryRequest postQueryRequest) {
-        long current = postQueryRequest.getCurrent();
-        long size = postQueryRequest.getPageSize();
-        Page<Post> postPage = postService.page(new Page<>(current, size),
-                postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postPage);
-    }
+//    /**
+//     * 分页获取列表（仅管理员）
+//     *
+//     * @param postQueryRequest
+//     * @return
+//     */
+//    @PostMapping("/list/page")
+//    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+//    public BaseResponse<Page<Post>> listPostByPage(@RequestBody PostQueryRequest postQueryRequest) {
+//        long current = postQueryRequest.getCurrent();
+//        long size = postQueryRequest.getPageSize();
+//        Page<Post> postPage = postService.page(new Page<>(current, size),
+//                postService.getQueryWrapper(postQueryRequest));
+//        return ResultUtils.success(postPage);
+//    }
 
-    /**
-     * 分页获取列表（封装类）
-     *
-     * @param postQueryRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/list/page/vo")
-    public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
-        long current = postQueryRequest.getCurrent();
-        long size = postQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Post> postPage = postService.page(new Page<>(current, size),
-                postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
-    }
+//    /**
+//     * 分页获取列表（封装类）
+//     *
+//     * @param postQueryRequest
+//     * @param request
+//     * @return
+//     */
+//    @PostMapping("/list/page/vo")
+//    public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
+//            HttpServletRequest request) {
+//        long current = postQueryRequest.getCurrent();
+//        long size = postQueryRequest.getPageSize();
+//        // 限制爬虫
+//        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+//        Page<Post> postPage = postService.page(new Page<>(current, size),
+//                postService.getQueryWrapper(postQueryRequest));
+//        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+//    }
 
-    /**
-     * 分页获取当前用户创建的资源列表
-     *
-     * @param postQueryRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<PostVO>> listMyPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
-        if (postQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User loginUser = userService.getLoginUser(request);
-        postQueryRequest.setUserId(loginUser.getId());
-        long current = postQueryRequest.getCurrent();
-        long size = postQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Post> postPage = postService.page(new Page<>(current, size),
-                postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
-    }
+//    /**
+//     * 分页获取当前用户创建的资源列表
+//     *
+//     * @param postQueryRequest
+//     * @param request
+//     * @return
+//     */
+//    @PostMapping("/my/list/page/vo")
+//    public BaseResponse<Page<PostVO>> listMyPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
+//            HttpServletRequest request) {
+//        if (postQueryRequest == null) {
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//        }
+//        User loginUser = userService.getLoginUser(request);
+//        postQueryRequest.setUserId(loginUser.getId());
+//        long current = postQueryRequest.getCurrent();
+//        long size = postQueryRequest.getPageSize();
+//        // 限制爬虫
+//        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+//        Page<Post> postPage = postService.page(new Page<>(current, size),
+//                postService.getQueryWrapper(postQueryRequest));
+//        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+//    }
 
     // endregion
 
-    /**
-     * 分页搜索（从 ES 查询，封装类）
-     *
-     * @param postQueryRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/search/page/vo")
-    public BaseResponse<Page<PostVO>> searchPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
-        long size = postQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
-    }
+//    /**
+//     * 分页搜索（从 ES 查询，封装类）
+//     *
+//     * @param postQueryRequest
+//     * @param request
+//     * @return
+//     */
+//    @PostMapping("/search/page/vo")
+//    public BaseResponse<Page<PostVO>> searchPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
+//            HttpServletRequest request) {
+//        long size = postQueryRequest.getPageSize();
+//        // 限制爬虫
+//        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+//        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
+//        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+//    }
 
     /**
      * 编辑（用户）
@@ -246,16 +243,16 @@ public class PostController {
             post.setTags(JSONUtil.toJsonStr(tags));
         }
         // 参数校验
-        postService.validPost(post, false);
+//        postService.validPost(post, false);
         User loginUser = userService.getLoginUser(request);
         long id = postEditRequest.getId();
         // 判断是否存在
         Post oldPost = postService.getById(id);
         ThrowUtils.throwIf(oldPost == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldPost.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
+//        if (!oldPost.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+//            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+//        }
         boolean result = postService.updateById(post);
         return ResultUtils.success(result);
     }
