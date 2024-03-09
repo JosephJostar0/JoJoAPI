@@ -1,4 +1,6 @@
 -- 接口信息表
+use bearapi;
+
 create table if not exists bearapi.`interface_info`
 (
     `id` bigint not null auto_increment comment '主键' primary key,
