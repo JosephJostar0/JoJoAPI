@@ -217,6 +217,11 @@ const TableList: React.FC = () => {
                 total: res.data.total,
               }
             }
+            return {
+              data:[],
+              success: false,
+              total:0,
+            }
         }}
         columns={columns}
         rowSelection={{
