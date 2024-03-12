@@ -43,22 +43,20 @@ const Index: React.FC = () => {
         <PageContainer title="在线接口开放平台">
           <List
             className="my-list"
-            // 设置 loading 属性，表示数据是否正在加载中
             loading={loading}
             itemLayout="horizontal"
-            // 将列表数据作为数据源传递给 List 组件
             dataSource={list}
-            // 渲染每个列表项
-            renderItem={(item) => (
-              <List.Item actions={[<a key={"list-loadmore-edit"}>查看</a>]}>
-                <List.Item.Meta
-                  // href等会要改成接口文档的链接
-                  title={<a href={"https://ant.design"}>{item.name}</a>}
-                  description={item.description}
-                />
-              </List.Item>
-              )
-            }
+
+            renderItem={(item) => {
+              const apiLink = `/interface_info/${item.id}`;
+              return (
+                <List.Item actions={[<a key={item.id} href={apiLink}>查看</a>]}>
+                  <List.Item.Meta
+                    title={<a href={apiLink}>{item.apiName}</a>}
+                    description={item.description}
+                    />
+                </List.Item>
+              );}}
             // 分页配置
             pagination={{
               // 自定义显示总数

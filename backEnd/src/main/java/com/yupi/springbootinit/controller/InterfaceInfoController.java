@@ -3,6 +3,7 @@ package com.yupi.springbootinit.controller;
 import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.yupi.springbootinit.annotation.AuthCheck;
 import com.yupi.springbootinit.common.*;
 import com.yupi.springbootinit.constant.CommonConstant;
@@ -12,6 +13,7 @@ import com.yupi.springbootinit.exception.ThrowUtils;
 import com.yupi.springbootinit.model.dto.interfaceInfo.InterfaceInfoAddRequest;
 import com.yupi.springbootinit.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yupi.springbootinit.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
+import com.yupi.springbootinit.model.dto.interfaceInfo.InterfaceInvokeRequest;
 import com.yupi.springbootinit.model.entity.InterfaceInfo;
 import com.yupi.springbootinit.model.entity.User;
 import com.yupi.springbootinit.service.InterfaceInfoService;
@@ -225,6 +227,41 @@ public class InterfaceInfoController {
         interfaceInfo.setStatus(0);
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * @param interfaceInvokeRequest
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<String> invokeInterfaceInfo(@RequestBody InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
+        if (interfaceInvokeRequest == null || interfaceInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        long id = interfaceInvokeRequest.getId();
+        String userRequestParams = interfaceInvokeRequest.getUserRequestParams();
+
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
+        }
+
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        Gson gson = new Gson();
+
+        //将用户请求参数转换为com.zuel.jojoapi_client_sdk.model.User对象
+//        JojoApiClient currentClient = new JojoApiClient(accessKey,secretKey);
+//        com.zuel.jojoapi_client_sdk.model.User user = new com.zuel.jojoapi_client_sdk.model.User();
+//        user.setUsername(userRequestParams);
+//        String usernameByPost = currentClient.getUserNameByPost(user);
+//        return ResultUtils.success(usernameByPost);
+        return ResultUtils.success(loginUser.getUserName());
     }
 
 
