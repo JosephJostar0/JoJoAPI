@@ -1,4 +1,5 @@
 export default [
+  {path:'/', name:'主页', icon:'smile', component:'./Index'},
   {
     path: '/user',
     layout: false,
@@ -10,7 +11,7 @@ export default [
     icon: 'crown',
     access: 'canAdmin',
     routes: [
-      {name:'接口管理', icon:'table', path:'/admin/interface_info', component:'./InterfaceInfo'}
+      {name:'接口管理', icon:'table', path:'/admin/interface_info', component:'./Admin/InterfaceInfo'}
     ],
   },
   { path: '*', layout: false, component: './404' },

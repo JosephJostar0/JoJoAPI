@@ -19,6 +19,8 @@ import {
   addInterfaceInfoUsingPost, 
   deleteInterfaceInfoUsingPost, 
   listInterfaceInfoByPageUsingGet,
+  offlineInterfaceInfoUsingPost,
+  onlineInterfaceInfoUsingPost,
   updateInterfaceInfoUsingPost,
 } from '@/services/bearapi_backend/interfaceInfoController';
 
@@ -121,6 +123,54 @@ const TableList: React.FC = () => {
   };
 
   /**
+   *  Delete node
+   * @zh-CN 删除节点
+   *
+   * @param record
+   */
+  const handleOnline = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('Onlining');
+    if (!record) return true;
+    try {
+      await onlineInterfaceInfoUsingPost({
+        id: record.id
+      });
+      hide();
+      message.success('successful online');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('Online failed, please try again');
+      return false;
+    }
+  };
+
+  /**
+   *  Delete node
+   * @zh-CN 删除节点
+   *
+   * @param record
+   */
+  const handleOffline = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('Offlining');
+    if (!record) return true;
+    try {
+      await offlineInterfaceInfoUsingPost({
+        id: record.id
+      });
+      hide();
+      message.success('successful offline');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('offline failed, please try again');
+      return false;
+    }
+  };
+
+  /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
@@ -206,14 +256,33 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
+        
+        record.status === 0?
         <a
-          key="config"
+          key="online"
           onClick={()=>{
-            handleRemove(record);
+            handleOnline(record);
           }}
         >
+         发布 
+        </a> : null,
+
+        record.status === 1?
+        <a
+          key="offline"
+          onClick={()=>{
+            handleOffline(record);
+          }}
+        >
+         下线 
+        </a> : null,
+
+        <Button type = "text" danger key="config"
+         onClick={() => {
+          handleRemove(record);
+        }}>
           删除
-        </a>
+        </Button>,
       ],
     },
   ];
