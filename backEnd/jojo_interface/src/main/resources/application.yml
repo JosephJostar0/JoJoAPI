@@ -2,6 +2,8 @@ server:
   port: 8123
   servlet:
     context-path: /api
+#  address: 0.0.0.0
+
 jojoapi:
   client:
     access-key: sora

@@ -8,11 +8,13 @@
         <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.zuel</groupId>
     <artifactId>jojoApi_client_sdk</artifactId>
     <version>1.0.0</version>
     <name>jojoApi_client_sdk</name>
     <description>jojoApi_client_sdk</description>
+
     <properties>
         <java.version>21</java.version>
     </properties>

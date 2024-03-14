@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("name")
 public class NameController {
-    @GetMapping("/")
+    @GetMapping("/get")
     public String getNameByGet(String name) {
         return "GET Your name is " + name;
     }
 
-    @PostMapping("/")
+    @PostMapping("/post")
     public String getNameByPost(@RequestParam String name) {
         return "POST Your name is " + name;
     }
