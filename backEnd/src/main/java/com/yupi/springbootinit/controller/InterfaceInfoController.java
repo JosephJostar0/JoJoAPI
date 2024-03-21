@@ -261,7 +261,7 @@ public class InterfaceInfoController {
 //        user.setUsername(userRequestParams);
 //        String usernameByPost = currentClient.getUserNameByPost(user);
 //        return ResultUtils.success(usernameByPost);
-        return ResultUtils.success(loginUser.getUserName());
+        return ResultUtils.success("A child is to fall after fall, it gradually grew up.");
     }
 
 
