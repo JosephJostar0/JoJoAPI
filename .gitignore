@@ -1,3 +1,6 @@
+*.7z
+backend/src/test
+
 # Logs
 logs
 *.log
