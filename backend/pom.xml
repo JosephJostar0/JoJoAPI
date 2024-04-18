@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
         </dependency>
 
         <!--        分隔符-->
@@ -50,12 +50,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
@@ -90,13 +84,23 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.8</version>
         </dependency>
-    </dependencies>
 
-    <dependency>
-        <groupId>com.github.binarywang</groupId>
-        <artifactId>wx-java-mp-spring-boot-starter</artifactId>
-        <version>4.4.0</version>
-    </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>wx-java-mp-spring-boot-starter</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.zuel</groupId>
+            <artifactId>jojoApi_client_sdk</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+
+
+    </dependencies>
 
     <build>
         <plugins>

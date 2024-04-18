@@ -1,5 +1,5 @@
 *.7z
-backend/src/test
+test/
 
 # Logs
 logs

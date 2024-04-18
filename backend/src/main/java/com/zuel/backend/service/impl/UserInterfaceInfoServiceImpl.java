@@ -1,12 +1,18 @@
 package com.zuel.backend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zuel.backend.common.ErrorCode;
 import com.zuel.backend.exception.BusinessException;
+import com.zuel.backend.mapper.InterfaceInfoMapper;
 import com.zuel.backend.mapper.UserInterfaceInfoMapper;
+import com.zuel.backend.mapper.UserMapper;
+import com.zuel.backend.model.entity.InterfaceInfo;
+import com.zuel.backend.model.entity.User;
 import com.zuel.backend.model.entity.UserInterfaceInfo;
 import com.zuel.backend.service.UserInterfaceInfoService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +23,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoMapper, UserInterfaceInfo>
         implements UserInterfaceInfoService {
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private InterfaceInfoMapper interfaceInfoMapper;
+
+    @Resource
+    private UserInterfaceInfoMapper userInterfaceInfoMapper;
+
     @Override
     public void validUserInterfaceInfo(UserInterfaceInfo userInterfaceInfo, boolean add) {
         if (userInterfaceInfo == null) {
@@ -44,6 +59,31 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         updateWrapper.setSql("leftNum = leftNum - 1, totalNum = totalNum + 1");
         return this.update(updateWrapper);
     }
+
+    @Override
+    public boolean checkAccess(String accessKey, String apiPath) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<InterfaceInfo> interfaceInfoQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserInterfaceInfo> userInterfaceInfoQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("accessKey", accessKey);
+        interfaceInfoQueryWrapper.eq("url", apiPath);
+        long userCount = userMapper.selectCount(userQueryWrapper);
+        long interfaceCount = interfaceInfoMapper.selectCount(interfaceInfoQueryWrapper);
+        if (userCount != 1 || interfaceCount != 1) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userMapper.selectOne(userQueryWrapper);
+        InterfaceInfo interfaceInfo = interfaceInfoMapper.selectOne(interfaceInfoQueryWrapper);
+        userInterfaceInfoQueryWrapper.eq("userId", user.getId()).eq("interfaceInfoId", interfaceInfo.getId());
+        long uiCount = userInterfaceInfoMapper.selectCount(userInterfaceInfoQueryWrapper);
+        if (uiCount == 0) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        UserInterfaceInfo userInterfaceInfo = userInterfaceInfoMapper.selectOne(userInterfaceInfoQueryWrapper);
+        return userInterfaceInfo.getLeftNum() > 0;
+    }
+
+
 }
 
 

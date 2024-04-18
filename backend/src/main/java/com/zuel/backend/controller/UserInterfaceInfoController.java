@@ -9,6 +9,7 @@ import com.zuel.backend.constant.CommonConstant;
 import com.zuel.backend.constant.UserConstant;
 import com.zuel.backend.exception.BusinessException;
 import com.zuel.backend.exception.ThrowUtils;
+import com.zuel.backend.model.dto.userinterfaceinfo.CheckApiUsing;
 import com.zuel.backend.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import com.zuel.backend.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import com.zuel.backend.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+
+import javax.sound.midi.Track;
 import java.util.List;
 
 /**
@@ -177,5 +180,12 @@ public class UserInterfaceInfoController {
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         Page<UserInterfaceInfo> userInterfaceInfoPage = userInterfaceInfoService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(userInterfaceInfoPage);
+    }
+
+    @PostMapping("/check/api")
+    public BaseResponse<Boolean> checkApiUsing(CheckApiUsing checkApiUsing){
+        String accessKey = checkApiUsing.getAccessKey();
+        String apiPath = checkApiUsing.getApiPath();
+        return ResultUtils.success(userInterfaceInfoService.checkAccess(accessKey, apiPath));
     }
 }

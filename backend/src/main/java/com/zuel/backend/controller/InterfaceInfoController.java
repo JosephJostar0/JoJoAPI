@@ -21,6 +21,7 @@ import com.zuel.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import com.zuel.jojoapi_client_sdk.client.JojoApiClient;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -251,94 +252,27 @@ public class InterfaceInfoController {
         }
 
         User loginUser = userService.getLoginUser(request);
-        String accessKey = loginUser.getAccessKey();
-        String secretKey = loginUser.getSecretKey();
+        String accessKey = "nahida";
+        String secretKey = "nahida";
         Gson gson = new Gson();
 
         //将用户请求参数转换为com.zuel.jojoapi_client_sdk.model.User对象
-//        JojoApiClient currentClient = new JojoApiClient(accessKey,secretKey);
-//        com.zuel.jojoapi_client_sdk.model.User user = new com.zuel.jojoapi_client_sdk.model.User();
-//        user.setUsername(userRequestParams);
-//        String usernameByPost = currentClient.getUserNameByPost(user);
-//        return ResultUtils.success(usernameByPost);
+        JojoApiClient currentClient = new JojoApiClient(accessKey,secretKey);
+	if (id == 28) {
+		return ResultUtils.success(currentClient.getRandMail());
+	} else if (id == 29) {
+		return ResultUtils.success(
+			currentClient.postSpeakers()
+		);
+	} else if (id == 31) {
+		return ResultUtils.success(
+			currentClient.postTTS("nahida", "十年之前，我不认识你，你不属于我，我们还是一样，陪在一个陌生人左右，走过渐渐熟悉的街头。")
+		);
+	} else if (id == 30) {
+		return ResultUtils.success(
+			currentClient.postSing(userRequestParams)
+		);
+	}
         return ResultUtils.success("A child is to fall after fall, it gradually grew up.");
     }
-
-
-//    /**
-//     * 分页获取当前用户创建的资源列表
-//     *
-//     * @param interfaceInfoQueryRequest
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping("/my/list/page/vo")
-//    public BaseResponse<Page<InterfaceInfoVO>> listMyInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
-//            HttpServletRequest request) {
-//        if (interfaceInfoQueryRequest == null) {
-//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-//        }
-//        User loginUser = userService.getLoginUser(request);
-//        interfaceInfoQueryRequest.setUserId(loginUser.getId());
-//        long current = interfaceInfoQueryRequest.getCurrent();
-//        long size = interfaceInfoQueryRequest.getPageSize();
-//        // 限制爬虫
-//        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-//        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size),
-//                interfaceInfoService.getQueryWrapper(interfaceInfoQueryRequest));
-//        return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
-//    }
-//
-//    // endregion
-//
-//    /**
-//     * 分页搜索（从 ES 查询，封装类）
-//     *
-//     * @param interfaceInfoQueryRequest
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping("/search/page/vo")
-//    public BaseResponse<Page<InterfaceInfoVO>> searchInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
-//            HttpServletRequest request) {
-//        long size = interfaceInfoQueryRequest.getPageSize();
-//        // 限制爬虫
-//        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-//        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.searchFromEs(interfaceInfoQueryRequest);
-//        return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
-//    }
-//
-//    /**
-//     * 编辑（用户）
-//     *
-//     * @param interfaceInfoEditRequest
-//     * @param request
-//     * @return
-//     */
-//    @PostMapping("/edit")
-//    public BaseResponse<Boolean> editInterfaceInfo(@RequestBody InterfaceInfoEditRequest interfaceInfoEditRequest, HttpServletRequest request) {
-//        if (interfaceInfoEditRequest == null || interfaceInfoEditRequest.getId() <= 0) {
-//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-//        }
-//        InterfaceInfo interfaceInfo = new InterfaceInfo();
-//        BeanUtils.copyProperties(interfaceInfoEditRequest, interfaceInfo);
-//        List<String> tags = interfaceInfoEditRequest.getTags();
-//        if (tags != null) {
-//            interfaceInfo.setTags(JSONUtil.toJsonStr(tags));
-//        }
-//        // 参数校验
-//        interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
-//        User loginUser = userService.getLoginUser(request);
-//        long id = interfaceInfoEditRequest.getId();
-//        // 判断是否存在
-//        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-//        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
-//        // 仅本人或管理员可编辑
-//        if (!oldInterfaceInfo.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-//            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-//        }
-//        boolean result = interfaceInfoService.updateById(interfaceInfo);
-//        return ResultUtils.success(result);
-//    }
-
 }

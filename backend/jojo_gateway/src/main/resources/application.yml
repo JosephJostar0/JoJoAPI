@@ -1,0 +1,27 @@
+server:
+  port: 8090
+  address: 0.0.0.0
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+
+spring:
+  application:
+    name: jojo_gateway
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader= source, jojo
+      routes:
+        - id: api_route
+          uri: http://localhost:8123
+          predicates:
+            - Path=/api/rand/**
+        - id: api_route2
+          uri: http://www.zuel-force.cn:11115
+          predicates:
+            - Path=/api/ai/**

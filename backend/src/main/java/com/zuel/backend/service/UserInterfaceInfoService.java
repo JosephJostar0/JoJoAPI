@@ -12,4 +12,6 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
     void validUserInterfaceInfo(UserInterfaceInfo interfaceInfo, boolean add);
 
     boolean invokeCount(long interfaceInfoId, long userId);
+
+    boolean checkAccess(String accessKey, String apiPath);
 }
