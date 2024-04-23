@@ -37,10 +37,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
         // 2. black list
         ServerHttpResponse response = exchange.getResponse();
-        if (!IP_WHITE_LIST.contains(sourceAddress)) {
-            response.setStatusCode(HttpStatus.FORBIDDEN);
-            return response.setComplete();
-        }
+//        if (!IP_WHITE_LIST.contains(sourceAddress)) {
+//            response.setStatusCode(HttpStatus.FORBIDDEN);
+//            return response.setComplete();
+//        }
 
 
         // 3. authentication
@@ -53,17 +53,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String path = request.getPath().value();
 
 
-        if (gatewayUtils.checkAccess(accessKey, timestamp, sign)) {
-            return handleNoAuth(response);
-        }
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            gatewayUtils.handlePlus(accessKey, path);
-        } else {
-            return handleInvokeError(response);
-        }
-
-        log.info("\n\ncustom global filter\n\n");
+//        if (gatewayUtils.checkAccess(accessKey, timestamp, sign)) {
+//            return handleNoAuth(response);
+//        }
+//
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            gatewayUtils.handlePlus(accessKey, path);
+//        } else {
+//            return handleInvokeError(response);
+//        }
+//
+//        log.info("\n\ncustom global filter\n\n");
         return chain.filter(exchange);
     }
 
