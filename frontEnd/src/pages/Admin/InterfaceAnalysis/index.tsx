@@ -20,8 +20,8 @@ const InterfaceAnalysis: React.FC = () => {
   // ECharts图表的配置选项
   const option = {
     title: {
-      text: 'Referer of a Website',
-      subtext: 'Fake Data',
+      text: '调用次数最多的接口top3',
+      subtext: '',
       left: 'center'
     },
     tooltip: {
@@ -37,11 +37,9 @@ const InterfaceAnalysis: React.FC = () => {
         type: 'pie',
         radius: '50%',
         data: [
-          { value: 1048, name: 'jojo' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
+          { value: 1048, name: '随机邮箱' },
+          { value: 735, name: '点歌' },
+          { value: 580, name: '文本转语音' },
         ],
         emphasis: {
           itemStyle: {
