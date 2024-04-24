@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final List<String> IP_WHITE_LIST = Arrays.asList("172.17.195.245", "127.0.0.1", "192.168.3.120");
+    private static final List<String> IP_WHITE_LIST = Arrays.asList("172.17.195.245", "127.0.0.1", "192.168.3.120", "172.17.195.1");
     private GatewayUtils gatewayUtils;
 
     @Override
@@ -37,10 +37,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
         // 2. black list
         ServerHttpResponse response = exchange.getResponse();
-//        if (!IP_WHITE_LIST.contains(sourceAddress)) {
-//            response.setStatusCode(HttpStatus.FORBIDDEN);
-//            return response.setComplete();
-//        }
+        if (!IP_WHITE_LIST.contains(sourceAddress)) {
+            response.setStatusCode(HttpStatus.FORBIDDEN);
+            return response.setComplete();
+        }
 
 
         // 3. authentication
@@ -51,19 +51,18 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String sign = headers.getFirst("sign");
         String body = headers.getFirst("body");
         String path = request.getPath().value();
+        if (!gatewayUtils.checkAccess(accessKey, timestamp, sign)) {
+            return handleNoAuth(response);
+        }
+        if (response.getStatusCode() == HttpStatus.OK) {
+            gatewayUtils.handlePlus(accessKey, path);
+        } else {
+            return handleInvokeError(response);
+        }
 
-
-//        if (gatewayUtils.checkAccess(accessKey, timestamp, sign)) {
-//            return handleNoAuth(response);
-//        }
-//
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            gatewayUtils.handlePlus(accessKey, path);
-//        } else {
-//            return handleInvokeError(response);
-//        }
-//
-//        log.info("\n\ncustom global filter\n\n");
+        log.info("\n\ncustom global filter\n\n");
+        body = body + "1";
+        nonce = nonce + "2";
         return chain.filter(exchange);
     }
 
